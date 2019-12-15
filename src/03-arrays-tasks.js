@@ -377,8 +377,9 @@ function getFalsyValuesCount(arr) {
  *    [ null, undefined, null ], null => 2
  *    [ true, 0, 1, 'true' ], true => 1
  */
-function findAllOccurences(/* arr, item */) {
-  throw new Error('Not implemented');
+function findAllOccurences(arr, item) {
+  const newArr = arr.filter((arrItem) => arrItem === item);
+  return newArr.length;
 }
 
 /**
@@ -392,8 +393,8 @@ function findAllOccurences(/* arr, item */) {
  *    [1, 2, 3, 4, 5]                   => '1,2,3,4,5'
  *    ['rock', 'paper', 'scissors']     => 'rock,paper,scissors'
  */
-function toStringList(/* arr */) {
-  throw new Error('Not implemented');
+function toStringList(arr) {
+  return arr.join(',');
 }
 
 
@@ -423,8 +424,8 @@ function toStringList(/* arr */) {
  *      { country: 'Russia',  city: 'Saint Petersburg' }
  *    ]
  */
-function sortCitiesArray(/* arr */) {
-  throw new Error('Not implemented');
+function sortCitiesArray(arr) {
+  return arr.sort((a, b) => a.country.localeCompare(b.country));
 }
 
 /**
@@ -462,9 +463,8 @@ function getIdentityMatrix(/* n */) {
  *     0, 100 => [ 0, 1, 2, ..., 100 ]
  *     3, 3   => [ 3 ]
  */
-function getIntervalArray(/* start, end */) {
-  // return Array.from({ length: end - start }, (v, k) => k + 1);
-  throw new Error('Not implemented');
+function getIntervalArray(start, end) {
+  return Array.from({ length: end - start + 1 }, (_, k) => start + k);
 }
 
 /**
@@ -512,8 +512,21 @@ function distinct(arr) {
  *    "Poland" => ["Lodz"]
  *   }
  */
-function group(/* array, keySelector, valueSelector */) {
-  throw new Error('Not implemented');
+function group(array, keySelector, valueSelector) {
+  const map = new Map();
+  array.map((item) => {
+    const key = keySelector(item);
+    const value = valueSelector(item);
+    if (!map.has(key)) {
+      map.set(key, []);
+    }
+    const it = map.get(key);
+    it.push(value);
+    map.set(key, it);
+    return item;
+  });
+
+  return map;
 }
 
 
@@ -547,8 +560,25 @@ function selectMany(arr, childrenSelector) {
  *   ['one','two','three'], [2]       => 'three'  (arr[2])
  *   [[[ 1, 2, 3]]], [ 0, 0, 1 ]      => 2        (arr[0][0][1])
  */
-function getElementByIndexes(/* arr, indexes */) {
-  throw new Error('Not implemented');
+function getElementByIndexes(arr, indexes) {
+  let innerArr = arr;
+  let count = 0;
+  const len = indexes.length;
+  let item;
+  const getIndex = (index) => {
+    if (count === len) {
+      return item;
+    }
+    item = innerArr[indexes[index]];
+    count += 1;
+    innerArr = innerArr[indexes[index]];
+    getIndex(count);
+    return item;
+  };
+
+  const result = getIndex(0);
+
+  return result;
 }
 
 
