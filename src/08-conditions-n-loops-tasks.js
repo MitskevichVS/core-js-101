@@ -193,8 +193,17 @@ function isInsideCircle(circle, point) {
  *   'abracadabra'  => 'c'
  *   'entente' => null
  */
-function findFirstSingleChar(/* str */) {
-  throw new Error('Not implemented');
+function findFirstSingleChar(str) {
+  let flag = true;
+  let findItem = null;
+  const arr = str.split('');
+  arr.forEach((item, index) => {
+    if (index === arr.lastIndexOf(item) && index === arr.indexOf(item) && flag === true) {
+      findItem = item;
+      flag = false;
+    }
+  });
+  return findItem;
 }
 
 
@@ -220,8 +229,13 @@ function findFirstSingleChar(/* str */) {
  *   5, 3, true, true   => '[3, 5]'
  *
  */
-function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
-  throw new Error('Not implemented');
+function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
+  const startBracket = isStartIncluded ? '[' : '(';
+  const endBracket = isEndIncluded ? ']' : ')';
+  const first = a < b ? a : b;
+  const second = a > b ? a : b;
+
+  return `${startBracket}${first}, ${second}${endBracket}`;
 }
 
 
@@ -353,8 +367,8 @@ function isBracketsBalanced(str) {
   procStr.forEach((element) => {
     if (closeBr.includes(element) && stack.length === 0 && element !== '|') {
       stack.push('false');
-    // eslint-disable-next-line max-len
-    } else if (closeBr.includes(element) && openBr.indexOf(stack[stack.length - 1]) === closeBr.indexOf(element)) {
+    } else if (closeBr.includes(element)
+     && openBr.indexOf(stack[stack.length - 1]) === closeBr.indexOf(element)) {
       stack.pop();
     } else if (openBr.includes(element)) {
       stack.push(element);
@@ -387,8 +401,8 @@ function isBracketsBalanced(str) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  return num.toString(n);
 }
 
 
@@ -404,8 +418,42 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/webalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  const convertedPathesArray = [];
+  let length;
+  let flag = true;
+  pathes.forEach((item) => {
+    item.split('').forEach((letter, letterIndex) => {
+      if (!convertedPathesArray[letterIndex]) {
+        convertedPathesArray[letterIndex] = [];
+      }
+      convertedPathesArray[letterIndex].push(letter);
+    });
+  });
+
+  convertedPathesArray.forEach((item, index) => {
+    const filtered = item.filter((x, i, a) => a.indexOf(x) === i);
+    convertedPathesArray[index] = filtered;
+  });
+
+  convertedPathesArray.forEach((item, index) => {
+    if (item.length !== 1 && flag === true) {
+      length = index;
+      flag = false;
+    }
+  });
+
+  convertedPathesArray.length = length;
+  let pathString = convertedPathesArray.join('');
+  if (length === 0) {
+    return '';
+  }
+
+  while (pathString.length === 0 || pathString[pathString.length - 1] !== '/') {
+    pathString = pathString.slice(0, -1);
+  }
+
+  return pathString;
 }
 
 
@@ -427,8 +475,19 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const result = [];
+  for (let row = 0; row < m1.length; row += 1) {
+    result[row] = [];
+    for (let col = 0; col < m2[0].length; col += 1) {
+      let sum = 0;
+      for (let k = 0; k < m1[0].length; k += 1) {
+        sum += m1[row][k] * m2[k][col];
+      }
+      result[row][col] = sum;
+    }
+  }
+  return result;
 }
 
 
@@ -462,8 +521,54 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  let symbol = null;
+
+  const checkRows = (matrix) => {
+    let flag = false;
+
+    const field = (matrix === undefined ? this.field : matrix);
+
+    field.forEach((item) => {
+      if (item[0] === item[1] && item[1] === item[2] && item[0] !== null) {
+        flag = true;
+        [symbol] = item;
+      }
+    });
+
+    if (flag === true && symbol !== null) {
+      return symbol;
+    } return flag;
+  };
+
+  const checkCols = (matrix) => {
+    const sendField = matrix[0].map((col, i) => matrix.map((row) => row[i]));
+
+    const checkRow = checkRows(sendField);
+
+    if (checkRow !== null) {
+      return checkRow;
+    } return false;
+  };
+
+  const checkDiagonals = (matrix) => {
+    const sendField = [[], []];
+
+    matrix.forEach((item, index) => {
+      sendField[0].push(matrix[index][index]);
+      sendField[1].push(matrix[index][matrix.length - 1 - index]);
+    });
+
+    const checkRow = checkRows(sendField);
+
+    if (checkRow !== null) {
+      return checkRow;
+    } return false;
+  };
+
+  if (checkRows(position) || checkCols(position) || checkDiagonals(position)) {
+    return symbol;
+  } return undefined;
 }
 
 
